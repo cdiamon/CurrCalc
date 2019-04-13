@@ -13,6 +13,8 @@ import com.padmitriy.android.currcalc.util.CurrenciesDiffUtil
 import com.padmitriy.android.currcalc.util.GlideApp
 import kotlinx.android.extensions.LayoutContainer
 import kotlinx.android.synthetic.main.item_currency.*
+import java.math.BigDecimal
+import java.math.RoundingMode
 import java.util.*
 
 
@@ -67,21 +69,43 @@ class CurrenciesListAdapter(val currencyValueListener: CurrencyValueListener) :
                     .into(currImage)
 
                 currName.text = rateModel.name
-                currValueInput.setText(rateModel.value.toString())
+                val trimmedValue =
+                    BigDecimal(rateModel.value.toString()).setScale(2, RoundingMode.HALF_DOWN).stripTrailingZeros()
+                currValueInput.setText(trimmedValue.toPlainString())
+                try {
+                    currValueInput.setSelection(cursorPosition)
+                } catch (ignore: Exception) {
+                }
             }
 
             currValueInput.setOnFocusChangeListener { v, hasFocus ->
-                currencyValueListener.onFocusChanged(rateModel.name)
+
+                //                Collections.swap(ratesResponses, position, 0)
+//                notifyItemMoved(position, 0)
+
+                if (position != 0) {
+                    currencyValueListener.onFocusChanged(rateModel.name)
+                }
+//                v.onFocusChangeListener = null
 
                 currValueInput.addTextChangedListener { text ->
-                    currencyValueListener.onValueChanged(text.toString().toDouble())
+                    if (position == 0) {
+                        cursorPosition = currValueInput.selectionStart
+                        if (!text.isNullOrBlank()) {
+                            currencyValueListener.onValueChanged(rateModel.name, text.toString().toDouble())
+                        }
+//                        cache = text.toString().toDouble()
+                    }
                 }
             }
         }
     }
 
+    var cursorPosition = 1
+//    var cache: Double = 0.0
+
     interface CurrencyValueListener {
         fun onFocusChanged(name: String)
-        fun onValueChanged(value: Double)
+        fun onValueChanged(name: String, value: Double)
     }
 }

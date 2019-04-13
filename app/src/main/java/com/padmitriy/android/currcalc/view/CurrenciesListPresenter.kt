@@ -9,6 +9,7 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
 import timber.log.Timber
+import java.math.BigDecimal
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 import kotlin.random.Random
@@ -26,14 +27,18 @@ class CurrenciesListPresenter @Inject constructor(
 //            Observable.fromCallable { ratesDao.updateRate(ratesResponse) }
 //                .subscribeOn(Schedulers.io())
 //                .subscribe())
-    fun baseValueChanged(value: Double) {
+    fun baseValueChanged(baseCurrency: String, value: Double) {
+        getCurrenciesList(baseCurrency, value)
+    }
 
+    fun getCurrenciesList(baseCurrency: String) {
+        getCurrenciesList(baseCurrency, 1.0)
     }
 
     /**
      * subscribing to changes in DB and rewriting view on any update
      */
-    fun getCurrenciesList(baseCurrency: String) {
+    fun getCurrenciesList(baseCurrency: String, baseValue: Double) {
 
         currenciesFetchingDisposable?.dispose()
 
@@ -46,27 +51,29 @@ class CurrenciesListPresenter @Inject constructor(
                     .subscribe({ t ->
                         val ratesList: ArrayList<RateModel> =
                             t.rates.entries.map { entry ->
+                                var value = BigDecimal(entry.value.toString())
+                                value = value.multiply(BigDecimal(baseValue.toString()))
+                                    .setScale(4, BigDecimal.ROUND_HALF_DOWN)
                                 RateModel(
                                     entry.key,
-                                    entry.value
+                                    value.toDouble()
                                 )
                             }.toList() as ArrayList<RateModel>
-                        ratesList.add(0, RateModel(t.base, 1.0))
+                        ratesList.add(0, RateModel(t.base, baseValue))
                         ratesDao.updateRatesList(ratesList)
                     }, { t ->
                         t.printStackTrace()
                     })
                 )
+    }
+
+    fun getCurrencies() {
 
         unsubscribeOnDrop(ratesDao.getAllRates()
-//            .delay(1000, TimeUnit.MILLISECONDS)
-//            .repeat()
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .doOnNext { list ->
-                if (list.isEmpty()) {
-                    // filling db with data at first start
-                } else {
+                if (list.isNotEmpty()) {
                     view.showCurrencies(list)
                 }
             }
@@ -75,9 +82,10 @@ class CurrenciesListPresenter @Inject constructor(
                 view.showMessage(R.string.error_message)
             }
             .subscribe())
+
+        getCurrenciesList("eur")
     }
 
-//    }
 
     /**
      * in this method we take random item from database, and with random time interval changing
