@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                                                   xmlns:app="http://schemas.android.com/apk/res-auto"
+                                                   xmlns:tools="http://schemas.android.com/tools"
+                                                   android:layout_width="match_parent"
+                                                   android:layout_height="wrap_content"
+                                                   android:layout_marginTop="8dp"
+                                                   android:paddingBottom="8dp">
+
+    <ImageView
+            android:id="@+id/currImage"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_marginStart="12dp"
+            android:layout_marginTop="8dp"
+            android:contentDescription="@string/mountain_photo"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:src="@drawable/placeholder_circle"/>
+
+    <TextView
+            android:id="@+id/currName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:fontFamily="sans-serif-light"
+            android:textSize="18sp"
+            app:layout_constraintBottom_toBottomOf="@id/currImage"
+            app:layout_constraintStart_toEndOf="@id/currImage"
+            app:layout_constraintTop_toTopOf="@id/currImage"
+            tools:text="TRL"/>
+
+    <EditText
+            android:id="@+id/currValueInput"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="12dp"
+            android:fontFamily="sans-serif-light"
+            android:hint="@string/value"
+            android:inputType="number"
+            android:textSize="22sp"
+            app:layout_constraintBaseline_toBaselineOf="@id/currName"
+            app:layout_constraintEnd_toEndOf="parent"
+            tools:text="155.30"/>
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

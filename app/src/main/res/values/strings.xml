@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">CurrCalc</string>
+    <string name="error_message">something gone wrong</string>
+    <string name="randomize">Randomize</string>
+    <string name="fab_stop">Stop</string>
+    <string name="mountain_photo">Mountain photo</string>
+    <string name="height_text">%1$s meters</string>
+    <string name="value">value</string>
+</resources>
