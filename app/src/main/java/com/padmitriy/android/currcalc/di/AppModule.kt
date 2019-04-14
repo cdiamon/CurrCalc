@@ -14,5 +14,4 @@ class AppModule(private val app: CurrCalcApplication) {
     fun provideApplicationContext(): Context {
         return app.applicationContext
     }
-
 }

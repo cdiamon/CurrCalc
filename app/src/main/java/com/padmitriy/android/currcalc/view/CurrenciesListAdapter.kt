@@ -22,6 +22,7 @@ class CurrenciesListAdapter(val currencyValueListener: CurrencyValueListener) :
     RecyclerView.Adapter<CurrenciesListAdapter.CurrencyViewHolder>() {
 
     private var ratesResponses: List<RateModel> = Collections.emptyList()
+    var cursorPosition = 1
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CurrencyViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.item_currency, parent, false)
@@ -34,8 +35,6 @@ class CurrenciesListAdapter(val currencyValueListener: CurrencyValueListener) :
     }
 
     fun setCurrencies(ratesResponses: List<RateModel>) {
-
-
         val diffUtilCallback = CurrenciesDiffUtil(
             this.ratesResponses, ratesResponses
         )
@@ -43,7 +42,6 @@ class CurrenciesListAdapter(val currencyValueListener: CurrencyValueListener) :
 
         this.ratesResponses = ratesResponses
         diffResult.dispatchUpdatesTo(this)
-//        notifyDataSetChanged()
     }
 
     override fun getItemCount() = ratesResponses.size
@@ -80,13 +78,9 @@ class CurrenciesListAdapter(val currencyValueListener: CurrencyValueListener) :
 
             currValueInput.setOnFocusChangeListener { v, hasFocus ->
 
-                //                Collections.swap(ratesResponses, position, 0)
-//                notifyItemMoved(position, 0)
-
                 if (position != 0) {
                     currencyValueListener.onFocusChanged(rateModel.name)
                 }
-//                v.onFocusChangeListener = null
 
                 currValueInput.addTextChangedListener { text ->
                     if (position == 0) {
@@ -94,15 +88,11 @@ class CurrenciesListAdapter(val currencyValueListener: CurrencyValueListener) :
                         if (!text.isNullOrBlank()) {
                             currencyValueListener.onValueChanged(rateModel.name, text.toString().toDouble())
                         }
-//                        cache = text.toString().toDouble()
                     }
                 }
             }
         }
     }
-
-    var cursorPosition = 1
-//    var cache: Double = 0.0
 
     interface CurrencyValueListener {
         fun onFocusChanged(name: String)

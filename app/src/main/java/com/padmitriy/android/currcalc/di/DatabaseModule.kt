@@ -25,5 +25,4 @@ class DatabaseModule {
     internal fun provideCurrenciesDao(currCalcDatabase: CurrCalcDatabase): RatesDao {
         return currCalcDatabase.getCurrCalcDao()
     }
-
 }

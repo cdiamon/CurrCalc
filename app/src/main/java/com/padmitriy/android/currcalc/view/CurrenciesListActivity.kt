@@ -14,36 +14,34 @@ class CurrenciesListActivity : BaseActivity(), CurrenciesListView, CurrenciesLis
     @Inject
     lateinit var currenciesListPresenter: CurrenciesListPresenter
 
-    private val adapter: CurrenciesListAdapter by lazy { CurrenciesListAdapter(this) }
+    private val currenciesAdapter: CurrenciesListAdapter by lazy { CurrenciesListAdapter(this) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         CurrCalcApplication.appComponent.inject(this)
         setContentView(com.padmitriy.android.currcalc.R.layout.activity_currencies_list)
-
-        currRecycler.layoutManager = LinearLayoutManager(this)
-        currRecycler.adapter = adapter
-
         currenciesListPresenter.attachView(this)
 
-        currenciesListPresenter.getCurrencies()
-
         initViews()
+
+        currenciesListPresenter.startFetchingCurrencies()
     }
 
     private fun initViews() {
+        currRecycler.layoutManager = LinearLayoutManager(this)
+        currRecycler.adapter = currenciesAdapter
     }
 
     override fun showCurrencies(list: List<RateModel>) {
-        adapter.setCurrencies(list)
-    }
-
-    override fun onFocusChanged(name: String) {
-        currenciesListPresenter.getCurrenciesList(name)
+        currenciesAdapter.setCurrencies(list)
     }
 
     override fun onValueChanged(name: String, value: Double) {
-        currenciesListPresenter.baseValueChanged(name, value)
+        currenciesListPresenter.getCurrenciesOnValueChanged(name, value)
+    }
+
+    override fun onFocusChanged(name: String) {
+        currenciesListPresenter.changeBaseCurrency(name)
     }
 
     override fun onDestroy() {

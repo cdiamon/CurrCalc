@@ -29,16 +29,11 @@ interface RatesDao {
     fun getRateByName(name: String): Single<RateModel>
 
     @Query("DELETE FROM RateModel")
-    fun clearAllSummits()
-
-//    @Query("SELECT * FROM appointmentNotification WHERE userId=:userId")
-//    fun findAppointments(userId: Int): List<AppointmentNotification> {
-//
-//    }
+    fun clearAllRates()
 
     @Transaction
     fun updateRatesList(rates: List<RateModel>) {
-        clearAllSummits()
+        clearAllRates()
         insertRatesList(rates)
     }
 }

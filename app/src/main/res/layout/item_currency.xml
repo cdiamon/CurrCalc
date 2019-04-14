@@ -13,7 +13,7 @@
             android:layout_height="40dp"
             android:layout_marginStart="12dp"
             android:layout_marginTop="8dp"
-            android:contentDescription="@string/mountain_photo"
+            android:contentDescription="@string/flag_image"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             tools:src="@drawable/placeholder_circle"/>

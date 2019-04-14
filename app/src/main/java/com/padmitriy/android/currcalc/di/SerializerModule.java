@@ -13,5 +13,4 @@ public class SerializerModule {
         return new GsonBuilder()
                 .create();
     }
-
 }
