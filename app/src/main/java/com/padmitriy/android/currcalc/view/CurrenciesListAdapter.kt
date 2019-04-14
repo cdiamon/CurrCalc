@@ -52,7 +52,7 @@ class CurrenciesListAdapter(val currencyValueListener: CurrencyValueListener) :
         fun init(rateModel: RateModel) {
 
             var resourceName = rateModel.name.toLowerCase()
-            // try is java reserved name
+            // workaround because try is java reserved name
             if (rateModel.name == "TRY") resourceName = "z_try"
             val resourceId = containerView.context.resources.getIdentifier(
                 resourceName, "drawable",
@@ -66,6 +66,7 @@ class CurrenciesListAdapter(val currencyValueListener: CurrencyValueListener) :
                     .apply(RequestOptions.circleCropTransform())
                     .into(currImage)
 
+                // BigDecimal to work with floating point TODO refactor BigDecimal to string in adapter, move logic to presenter
                 currName.text = rateModel.name
                 val trimmedValue =
                     BigDecimal(rateModel.value.toString()).setScale(2, RoundingMode.HALF_DOWN).stripTrailingZeros()
@@ -76,6 +77,7 @@ class CurrenciesListAdapter(val currencyValueListener: CurrencyValueListener) :
                 }
             }
 
+            //moving active item to top logic and listen to currency value change
             currValueInput.setOnFocusChangeListener { v, hasFocus ->
 
                 if (position != 0) {
@@ -94,6 +96,10 @@ class CurrenciesListAdapter(val currencyValueListener: CurrencyValueListener) :
         }
     }
 
+    /**
+     * @property onFocusChanged called when we click on non-top input
+     * @property onValueChanged called when we change value in top input
+     */
     interface CurrencyValueListener {
         fun onFocusChanged(name: String)
         fun onValueChanged(name: String, value: Double)
