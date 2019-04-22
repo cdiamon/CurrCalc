@@ -40,8 +40,8 @@ class CurrenciesListActivity : BaseActivity(), CurrenciesListView, CurrenciesLis
         currenciesListPresenter.getCurrenciesOnValueChanged(name, value)
     }
 
-    override fun onFocusChanged(name: String) {
-        currenciesListPresenter.changeBaseCurrency(name)
+    override fun onFocusChanged(name: String, value: Double) {
+        currenciesListPresenter.changeBaseCurrency(name, value)
     }
 
     override fun onDestroy() {

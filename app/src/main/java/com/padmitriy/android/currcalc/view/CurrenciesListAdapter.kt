@@ -80,12 +80,12 @@ class CurrenciesListAdapter(val currencyValueListener: CurrencyValueListener) :
             //moving active item to top logic and listen to currency value change
             currValueInput.setOnFocusChangeListener { v, hasFocus ->
 
-                if (position != 0) {
-                    currencyValueListener.onFocusChanged(rateModel.name)
+                if (adapterPosition != 0) {
+                    currencyValueListener.onFocusChanged(rateModel.name, currValueInput.text.toString().toDouble())
                 }
 
                 currValueInput.addTextChangedListener { text ->
-                    if (position == 0) {
+                    if (adapterPosition == 0) {
                         cursorPosition = currValueInput.selectionStart
                         if (!text.isNullOrBlank()) {
                             currencyValueListener.onValueChanged(rateModel.name, text.toString().toDouble())
@@ -101,7 +101,7 @@ class CurrenciesListAdapter(val currencyValueListener: CurrencyValueListener) :
      * @property onValueChanged called when we change value in top input
      */
     interface CurrencyValueListener {
-        fun onFocusChanged(name: String)
+        fun onFocusChanged(name: String, value: Double)
         fun onValueChanged(name: String, value: Double)
     }
 }
