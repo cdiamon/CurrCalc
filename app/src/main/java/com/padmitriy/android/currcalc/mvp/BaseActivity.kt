@@ -9,10 +9,13 @@ import androidx.appcompat.app.AppCompatActivity
 open class BaseActivity : AppCompatActivity(), BaseView {
 
     override fun showMessage(message: String) {
-        Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
+        runOnUiThread {
+            Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
+        }
     }
 
     override fun showMessage(@StringRes message: Int) {
+        //todo show snackbar asking to retry
         showMessage(getString(message))
     }
 }

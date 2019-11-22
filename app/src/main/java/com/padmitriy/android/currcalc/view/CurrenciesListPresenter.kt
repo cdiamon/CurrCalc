@@ -42,7 +42,7 @@ class CurrenciesListPresenter @Inject constructor(
         /**
          * starting default fetching
          */
-        changeBaseCurrency("eur")
+        changeBaseCurrency("eur", 1.0)
     }
 
     /**
@@ -55,8 +55,8 @@ class CurrenciesListPresenter @Inject constructor(
     /**
      * changing base currency, setting base value to default
      */
-    fun changeBaseCurrency(baseCurrency: String) {
-        subscribeToCurrencies(baseCurrency, 1.0)
+    fun changeBaseCurrency(baseCurrency: String, value: Double) {
+        subscribeToCurrencies(baseCurrency, value)
     }
 
     /**
