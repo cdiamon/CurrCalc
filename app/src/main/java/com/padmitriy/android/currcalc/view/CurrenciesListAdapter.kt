@@ -3,6 +3,7 @@ package com.padmitriy.android.currcalc.view
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
 import androidx.core.widget.addTextChangedListener
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
@@ -25,7 +26,8 @@ class CurrenciesListAdapter(val currencyValueListener: CurrencyValueListener) :
     var cursorPosition = 1
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CurrencyViewHolder {
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.item_currency, parent, false)
+        val view =
+            LayoutInflater.from(parent.context).inflate(R.layout.item_currency, parent, false)
 
         return CurrencyViewHolder(view)
     }
@@ -46,14 +48,17 @@ class CurrenciesListAdapter(val currencyValueListener: CurrencyValueListener) :
 
     override fun getItemCount() = ratesResponses.size
 
-    inner class CurrencyViewHolder(override val containerView: View) : RecyclerView.ViewHolder(containerView),
+    inner class CurrencyViewHolder(override val containerView: View) :
+        RecyclerView.ViewHolder(containerView),
         LayoutContainer {
 
         fun init(rateModel: RateModel) {
 
-            var resourceName = rateModel.name.toLowerCase()
+            var resourceName = rateModel.name.toLowerCase(Locale.getDefault())
+
             // workaround because try is java reserved name
             if (rateModel.name == "TRY") resourceName = "z_try"
+
             val resourceId = containerView.context.resources.getIdentifier(
                 resourceName, "drawable",
                 containerView.context.packageName
@@ -62,14 +67,15 @@ class CurrenciesListAdapter(val currencyValueListener: CurrencyValueListener) :
             with(containerView) {
                 GlideApp.with(this)
                     .load(resourceId)
-                    .error(resources.getDrawable(R.drawable.placeholder_circle))
+                    .error(ContextCompat.getDrawable(context, R.drawable.placeholder_circle))
                     .apply(RequestOptions.circleCropTransform())
                     .into(currImage)
 
                 // BigDecimal to work with floating point TODO refactor BigDecimal to string in adapter, move logic to presenter
                 currName.text = rateModel.name
                 val trimmedValue =
-                    BigDecimal(rateModel.value.toString()).setScale(2, RoundingMode.HALF_DOWN).stripTrailingZeros()
+                    BigDecimal(rateModel.value.toString()).setScale(2, RoundingMode.HALF_DOWN)
+                        .stripTrailingZeros()
                 currValueInput.setText(trimmedValue.toPlainString())
                 try {
                     currValueInput.setSelection(cursorPosition)
@@ -80,15 +86,18 @@ class CurrenciesListAdapter(val currencyValueListener: CurrencyValueListener) :
             //moving active item to top logic and listen to currency value change
             currValueInput.setOnFocusChangeListener { v, hasFocus ->
 
-                if (position != 0) {
+                if (adapterPosition != 0) {
                     currencyValueListener.onFocusChanged(rateModel.name)
                 }
 
                 currValueInput.addTextChangedListener { text ->
-                    if (position == 0) {
+                    if (adapterPosition == 0) {
                         cursorPosition = currValueInput.selectionStart
                         if (!text.isNullOrBlank()) {
-                            currencyValueListener.onValueChanged(rateModel.name, text.toString().toDouble())
+                            currencyValueListener.onValueChanged(
+                                rateModel.name,
+                                text.toString().toDouble()
+                            )
                         }
                     }
                 }
