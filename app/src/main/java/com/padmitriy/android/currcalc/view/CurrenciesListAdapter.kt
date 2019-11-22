@@ -87,7 +87,10 @@ class CurrenciesListAdapter(val currencyValueListener: CurrencyValueListener) :
             currValueInput.setOnFocusChangeListener { v, hasFocus ->
 
                 if (adapterPosition != 0) {
-                    currencyValueListener.onFocusChanged(rateModel.name)
+                    currencyValueListener.onFocusChanged(
+                        rateModel.name,
+                        currValueInput.text.toString().toDouble()
+                    )
                 }
 
                 currValueInput.addTextChangedListener { text ->
@@ -110,7 +113,7 @@ class CurrenciesListAdapter(val currencyValueListener: CurrencyValueListener) :
      * @property onValueChanged called when we change value in top input
      */
     interface CurrencyValueListener {
-        fun onFocusChanged(name: String)
+        fun onFocusChanged(name: String, value: Double)
         fun onValueChanged(name: String, value: Double)
     }
 }
